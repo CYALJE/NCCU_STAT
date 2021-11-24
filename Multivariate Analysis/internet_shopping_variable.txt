@@ -1,0 +1,28 @@
+The data come from answering the following 19 survey questions.
+
+Possible answers for Q1): 1 means "<$50", 2 means "$50-$100", 3 means "$100-$500", 4 means ">$500", 5 means "don't know".
+Q1) What is the total amount you spent on purchases through internet during the past 6 months?
+
+Possible answers for Q2)-Q6): 1 means "very unlikely", 2 means "somewhat unlikely", 3 means "neither unlikely nor likely", 4 means "somewhat likely", 5 means "very likely".
+Q2) You provide credit card and purchase information through a toll call/fax.
+Q3) You provide credit card and purchase information through a toll-free call/fax.
+Q4) You set up an account with the vendor once, then provide an account number and purchase information each time you make a purchase.
+Q5) You provide credit card and purchase information through e-mail.
+Q6) Any subsequent transmissions of your credit card and purchase information would be secure.
+
+Possible answers for Q7)-Q17): 1 means "strongly disagree", 2 means "somewhat disagree", 3 means "neither disagree nor agree", 4 means "somewhat agree", 5 means "strongly agree".
+Q7) Providing credit card information through the Web is the single most important reason I don't buy through the Web often.
+Q8) Providing credit card information through the Web is not riskier than providing it over the phone.
+Q9) I would be more willing to provide my credit card information through the Web if the prices are much lower.
+Q10) I would be more willing to provide my credit card information through the Web if the products/services were of a higher quality.
+Q11) I would be more willing to provide my credit card information through the Web if the Web vendor was well known and reliable.
+Q12) WWW vendors offer more useful information about the choices available.
+Q13) It is easier to place orders with WWW vendors.
+Q14) It is easier to cancel orders placed with WWW vendors.
+Q15) It is just as safe to use credit cards when making purchases from WWW vendors.
+Q16) WWW vendors offer better prices.
+Q17) It is easier to contact WWW vendors.
+
+Possible answers for Q18)-Q19): 1 means "never", 2 means "<1/month", 3 means "1-2/month", 4 means "3-5/month", 5 means "6-9/month", 6 means ">10/month".
+Q18) How often do you use the Web for shopping for personal reasons?
+Q19) How often do you use the Web for shopping for professional reasons?

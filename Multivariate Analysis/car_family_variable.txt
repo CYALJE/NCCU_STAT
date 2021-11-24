@@ -1,0 +1,13 @@
+The following three variables indicate the origin of the car:
+
+- American
+- Japanese 
+- European
+
+
+The following four variables indicate the family status:
+
+- Married
+- Married living with kids
+- Single
+- Single living with kids

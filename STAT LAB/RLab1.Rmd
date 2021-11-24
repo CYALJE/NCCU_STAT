@@ -1,0 +1,179 @@
+---
+title: "STAT R Lab1"
+author: "Chen"
+data: "2021/09/13"
+output: html_document
+---
+
+#### 1. 安裝 R 和 RStudio
+
+[R Link](https;//cran.r-project.org/bin/windows/base/)
+
+[RStudio Link](https;//www.rstudio.com/products/rstudio/download/)
+
+下載完後，點開執行檔，不用多做設定，一直下一步即可安裝完成，如果 Rstudio 安裝完打不開，可以到控制台將其刪除，重新安裝。
+
+---
+
+#### 2. 加減乘除四則運算
+
+在 R 裡面，運算規則與一般的數學相同，先乘除後加減，一般會用到的運算規則相信各位同學都足夠熟悉。
+
+```{r}
+1 + 2
+3 / 2
+3 - 5
+2 * 2
+```
+
+---
+
+#### 3. 變數與賦值
+
+如下面舉例，Var 就稱作變數，而將123指向Var的這個過程叫做賦值。
+
+此箭頭符號`<-`可用快捷鍵`Ctrl + Alt + i`完成。
+
+```{r}
+Var <- 123
+```
+
+而賦值的過程除了用箭頭代替，亦可以使用`=`來完成。
+
+```{r}
+Var2 = 321
+```
+
+經過賦值，所以Var、Var2各代表什麼？
+
+```{r}
+Var
+Var2
+```
+
+---
+
+#### 4. 字元、數值、整數
+
+判斷某個變數的型別，可以使用`typeof()`指令。
+
+字元就是以`""`符號所括之內容，在程式語言裡面為表示文字的型別。
+
+```{r}
+string = "霹靂卡霹靂拉拉波波莉娜貝貝魯多"
+typeof(string)
+```
+
+數值（numeric），雙倍精準度數值，簡單來形容就是double
+
+```{r}
+num = 59.4
+typeof(num)
+```
+```{r}
+num2 = 59
+typeof(num2)
+```
+
+整數，沒有小數位的數值，通常要表示整數會在數字後面加上一個L來表示。
+
+```{r}
+x = 23L
+typeof(x)
+```
+
+---
+
+#### 5. 向量、矩陣、list、dataframe
+
+使用`c`函數來製作向量，其中`1:5`表示數字1~5。
+
+```{r}
+c(1:5)
+```
+
+向量除了裝數字，還可以裝文字，但是要注意，向量裡面有多種不同型別的元素，會被強制轉成同一種型別，轉換的原則有需要用到再查。
+
+```{r}
+vec = c(1, 2, 4, "mat", 3.3, "stat")
+vec
+typeof(vec)
+```
+
+矩陣可以拿來儲存多行多列的資料，可以拿來做矩陣運算，此外，沒有column name和row name
+
+```{r}
+mat = matrix(1:8, ncol = 4, nrow = 2, byrow = TRUE)
+mat
+typeof(mat)
+```
+
+list與向量類似，但區別在於，它可以放入多種不同型別的元素。
+
+```{r}
+x = list(1, 2, 3.5, "matrix", 1L, TRUE)
+x
+typeof(x)
+```
+
+dataframe資料匡，大部分讀取進來的資料都會是資料匡的形式，與矩陣不同在於，它會有column name以及row name
+
+```{r}
+df = data.frame("性別" = c("F", "M", "F", "F"),
+                "身高" = c(180, 192, 155, 140))
+df
+typeof(df)
+```
+
+---
+
+#### 6. 畫圖
+
+下面是本次上課的資料，請同學先run一次才會有資料。
+
+```{r}
+data = data.frame("Sex" = c(sample(c("F", "M"), size = 20, replace = T, p = c(0.5, 0.5))),
+                  "Height" = c(rnorm(20, 175, 2)),
+                  "Weight" = c(rnorm(20, 60, 1)),
+                  "Age" = c(sample(c(10:40), replace = T, 20)))
+data
+```
+
+今天先教R內建的繪圖函數，`plot`以及`hist`。
+
+```{r}
+hist(data[, 4], xlab = "Age")
+```
+
+或是我想要觀察會不會有身高越高的人體重越重的情況，這時候就需要用到散步圖。
+
+```{r}
+plot(data[, 2], data[, 3], xlab = 'Height', ylab = "Weight", main = "Height vs. Weight", col = 2, pch = 3)
+```
+
+或是有一組資料，每年的生產量。
+
+```{r}
+pro = data.frame("Year" = c(2001:2012), 'Yield' = c(rnorm(12, 123, 2)))
+pro
+```
+
+畫一個折線圖來看看生產量的趨勢。
+
+```{r}
+plot(pro[, 1], pro[, 2], "l", lty = 2, col = 8, xlab = "Year", ylab = "Yield", main = "Yield/Year")
+```
+
+---
+
+#### 作業
+
+利用R內建的資料集`cars`來作圖，做同學認為覺得適合的圖
+
+請先運行下面指令，以獲得資料集
+```{r}
+cars
+```
+
+**請注意，圖一定要有圖名，x, y軸個別代表什麼變量要標注上去，此外請改動顏色或是圖標、線條的樣式**
+

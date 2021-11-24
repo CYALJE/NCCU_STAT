@@ -1,0 +1,164 @@
+---
+title: "stat_lab_3"
+author: "Chen"
+output: html_document
+---
+#### 在這堂課開始前，你應該要知道 Regression 的假設:
++ Normality
++ Linear relationship
++ Homoscedasticity
++ Independence
+
+1. 讀入資料，首先先安裝套件`faraway`
+```{r, eval = FALSE}
+install.packages("faraway")
+```
+2. 再來是從這個套件中引入我們今天上課要用到的資料：
+```{r}
+library(faraway)
+data(gala)
+gala
+```
+
++ 在配適模型之前可以先用`pairs()`去看一下每個資料之間的任兩個變量之間的關係，Species是response，Endemics這裡不拿來用，所以不放，範例如下：
+
+```{r}
+pairs(gala[, -c(1, 2)])
+```
+
+3. 配適迴歸模型
++ 以 Species 當作 response，以 Area、Elevation、Nearest、Scruz、Adjacent 當作explanatory variables，配適迴歸模型的指令為`lm()`，`使用summary()`可以得到一些有關此模型的相關資訊，此外，R 配適迴歸模型的時候會自動配適截距項。
+
++ 模型配適如下：
+
+$$
+Species = \beta_{0} + \beta_{1} Area + \beta_{2} Elevation + \beta_{3} Nearest+ \beta_{4} Scruz+ \beta_{5} Adjacent+ \varepsilon_{i},\,\,\,i = 1, 2, 3,... \,\,\, and \,\,\, \varepsilon  \sim N(0, \sigma^2)
+$$
+```{r}
+model = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(model)
+```
++ 由左至右分別為$\beta_0, \beta_1, \beta_2, \beta_3, \beta_4, \beta_5$ 的估計值(Estimate)、standard error、t值、p值，是針對個別的 $\beta$ 項目的一些檢定資訊。
+
++ 上面的`summary()`已經幫我們算好 p-value 等資訊了，而這些檢定是在檢定第i個變量的迴歸係數$\beta$是否異於0
+
+$$H_0:\beta_i = 0\,\,\,\,\,\,H_1:\beta_i\ne0$$
+
++ 那我們用信賴區間的方式去檢定第i個變量的迴歸係數$\beta$是否異於0，以 Area 來舉例（在$\alpha = 0.05$下）
+```{r}
+CI_Area = -0.023938 + 0.022422 * c(qt(0.025, 24), qt(0.975, 24))
+CI_Area
+```
++ 但其實不必這麼麻煩，使用`confint()`就可以看到每一個$\beta$在$\alpha = 0.05$下的信賴區間：
+```{r}
+confint(model)
+```
++ 同學可以對照上面`summary()`出來的p值，看看是否有相同的結果。
+
++ 模型建立好了，模型的很大一個功能就是預測，讓我們用建立的模型來預測一下在某些設定 好的解釋變數下，Species的值是多少，這邊需要用到`predict()`指令。
+
++ 首先先設定好各個解釋變數的設定值。
+```{r}
+setting = data.frame(Intercept = 1, Area = 12.03, Elevation = 100, Nearest = 15.0, Scruz = 20.0, Adjacent = 12.0)
+predict(model, setting)
+```
+4. 殘差分析
++ 殘差圖可以用來確認殘差是否有 equal variance, linearity，而配好的模型，殘差圖應當要為 null plot，也就是殘差應當呈現出來是沒有任何 pattern 存在，舉凡殘差的變異不是常數，或是殘差的分佈看起來有某種函數關係等等，這樣的殘差圖都不是 null plot，以下是範例 null plot 以及一些有特殊 pattern 的殘差圖。
+
+##### 注意：這邊是為了示範自行製造的數據，並非從上面的資料得來
+```{r}
+par(mfrow = c(3, 3))
+for (i in 1:9){
+  plot(1:50, rnorm(50), main = "null plot"); abline(h = 0, col = "red")
+}
+```
+```{r}
+par(mfrow = c(3, 3))
+for (i in 1:9){
+  plot(1:50, (1:50) * rnorm(50), main = "Strong non-constant Variance"); abline(h = 0, col = "red")
+}
+```
+```{r}
+par(mfrow = c(3, 3))
+for (i in 1:9){
+  plot(1:50, cos((1:50) * pi / 25) + rnorm(50), main = "non-linearity"); abline(h=0, col = "red")
+}
+```
+
+至於殘差是否服從常態可以使用 qqplot 來檢查，以下是範例：
+
++ 殘差若符合常態性，則在圖上約略會呈現一直線的狀況，大部分點跟 qqline 之間的距離不會有太大的偏移。
+
+```{r}
+x = rnorm(50)
+qqnorm(x)
+qqline(x)
+```
+
++ 若不服從常態，則點會跟線有明顯的偏移。
+
+```{r}
+y = runif(50)
+qqnorm(y)
+qqline(y)
+```
+
++ 上述示範完畢，那麼現在回到我們的資料
+
++ 從上面的`summary()`中提取所有的 residual，接下來我們要對他做分析。
+```{r}
+res = model$residual
+res
+```
+
++ 首先分析殘差 vs fitted value 是否為 null plot
+```{r}
+plot(model$fit, model$res, xlab = "fitted value", ylab = "residual", main = "fitted value vs residual")
+abline(h = 0, col = "red") 
+```
+
++ 可以看出不太像 null plot，不過具體是否為常數變異，還是需要靠檢定等數值的方式來決定。
+
++ 接下來檢查殘差是否有常態性:
+
+```{r}
+qqnorm(res)
+qqline(res)
+```
+
++ 看起來有點偏離，足見對於殘差要有常態性的假設可能無法滿足，該怎麼處理這些問題，這時候就需要更近一步的分析，有興趣的同學可以選修統計系的其他課，在此不詳談。
+
+5. 關於$R^2$
+
++ $R^2$是因變量被自變量解釋的比例，但其實想要提高$R^2$很簡單，請看以下範例：
+
++ 第一個範例是剛剛一開始配適的模型
+```{r}
+model = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(model)
+```
++ 第二個範例是幫 Area 多配適一個二次項。
+```{r}
+model2 = lm(Species ~ I(Area^2) + Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(model2)
+```
+第三個模型是把所有變量都加入他的二次項：
+```{r}
+model3 = lm(Species ~ I(Area^2) + I(Elevation^2) + I(Nearest^2) + I(Scruz^2) + I(Adjacent) + Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(model3)
+```
+第四個模型加入一點不同變量之間的交乘項：
+```{r}
+model4 = lm(Species ~ I(Area^2) + I(Elevation^2) + I(Nearest^2) + I(Scruz^2) + I(Adjacent * Elevation) + Area + Elevation + Nearest + Scruz + Adjacent + Area*Elevation, data = gala)
+summary(model4)
+```
++ 從模型1到模型4很明顯的，$R^2$ 上升了很多，被解釋變數解釋的比例變高了，但是這樣的模型真的好嗎？如果過度追求很高的$R^2$，其實只要一直放解釋變數進模型裡面就好了，但是卻未必會是一個好的模型，所以用$R^2$當作模型好壞的判斷標準可能未必在任何情況下都適合，此點需要注意。
+
+---
+
+#### Homework
++ 上面我們配適了一個有截距項的模型，現在請使用相同的response (Species)、解釋變數 (Area, Elevation, Nearest, Scruz, Adjacent) 去配適一個"沒有"截距項的模型，並計算每一個迴歸係數的信賴區間，以及描述哪一個$\beta$估計值的變化，例如顯著變不顯著或是不顯著變顯著，並將結果截圖貼到 word 再上傳。
+
+$$
+Species = \beta_{0} Area + \beta_{1} Elevation + \beta_{2} Nearest+ \beta_{3} Scruz+ \beta_{4} Adjacent+ \varepsilon_{i},\,\,\,i = 1, 2, 3,... \,\,\, and \,\,\, \varepsilon  \sim N(0, \sigma^2)
+$$
